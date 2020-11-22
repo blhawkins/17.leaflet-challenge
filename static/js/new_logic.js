@@ -87,7 +87,7 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
             return('#FF4D5B')
         }
     }
-
+    
     function onEachFeature(feature, layer) {
         layer.bindPopup('<h3>' + feature.properties.place + "</h3><hr><h3>" + feature.properties.mag + " Magnitude</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
     };

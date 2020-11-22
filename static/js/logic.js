@@ -6,17 +6,21 @@ d3.json(queryUrl, function(data) {
     createFeatures(data.features)
 });
 
+
+
 function createFeatures(earthquakeData) {
+
     //Create a function that creates a popup with the location and time of the earthquake
     function onEachFeature(feature, layer) {
         layer.bindPopup('<h3>' + feature.properties.place + "</h3><hr><h3>" + feature.properties.mag + " Magnitude</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
     };
-
     //Run the onEachFeature function for each element in the earthquakeData
     var earthquakes = L.geoJSON(earthquakeData, {
-        onEachFeature: onEachFeature
+        onEachFeature: onEachFeature,
+        pointToLayer: function (feature, latlng) {
+             return L.circle(latlng, radius = feature.properties.mag*30000);
+        }
     });
-
     //Send the earthquake layer to the createMap function
     createMap(earthquakes);
 };
@@ -65,3 +69,8 @@ function createMap(earthquakes) {
         collapsed: false
     }).addTo(myMap)
 };
+
+d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(data) {
+    //Send the data.features object to the createFeatures function
+    
+});

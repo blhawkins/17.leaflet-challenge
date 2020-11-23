@@ -42,71 +42,51 @@ var baseMaps = {
     'Satellite Map': satelliteMap
 };
 
-//----------Tectonic Plates Overlay---------- //Nest the d3.jsons in order to make the layer control
-
-//Use D3.json to pull in the tectonic plates geojson data
-d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(tectonicPlatesData) {
-    //Create an object to store the geoJSON portion of the tectonicPlatesData
-    var tectonicOverlay = {
-        'Tectonic Plates': L.geoJSON(tectonicPlatesData)
-    };
-    //Create a new layer control with the baseMaps and tectonicOverlay objects
-    L.control.layers(baseMaps, tectonicOverlay, {
-        collapsed: false
-    }).addTo(myMap)
-});
-
 //----------Earthquake Data Overlay----------
 
+//Perform a GET request to obtain the data from the queryURL
 var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson';
 //Perform a GET request to obtain the data from the queryURL
 d3.json(earthquakeQueryUrl, function(earthquakeData) {
+    //Save features portion of the json file to the earthquakeFeatures variable
     earthquakeFeatures = earthquakeData.features;
-
-    //Initialize the earthquakeMarkers list
-    earthquakeMarkers = []
-
-    //Create a function that allows for markers to be colored based on earthquake depth
-    function colorGradient(earthquakeDepth) {
-        if (earthquakeDepth <= 10) {
-            return('#AF93F8')
-        }
-        else if (earthquakeDepth <= 30) {
-            return('#D7F512')
-        }
-        else if (earthquakeDepth <= 50) {
-            return('#F9D719')
-        }
-        else if (earthquakeDepth <= 70) {
-            return('#FFAD29')
-        }
-        else if (earthquakeDepth <= 90) {
-            return('#FF9754')
-        }
-        else {
-            return('#FF4D5B')
-        }
-    }
-    
-    function onEachFeature(feature, layer) {
-        layer.bindPopup('<h3>' + feature.properties.place + "</h3><hr><h3>" + feature.properties.mag + " Magnitude</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+    //
+    for (var i = 0; i < earthquakeFeatures.length; i++){
+        L.circleMarker(earthquakeFeatures[i].geometry.coordinates.slice(0,2).reverse(), {
+            fillOpacity: 0.75,
+            color: 'white',
+            fillColor: colorGradient(earthquakeFeatures[i].geometry.coordinates[2]),
+            radius: magScale(earthquakeFeatures[i].properties.mag)
+        }).bindPopup('<h3>' + earthquakeFeatures[i].properties.place + "</h3><hr><h3>" + earthquakeFeatures[i].properties.mag + " Magnitude</h3><hr><p>" + new Date(earthquakeFeatures[i].properties.time) + "</p>").addTo(myMap);
     };
-
-    for (var i = 0; i <earthquakeFeatures.length; i++){
-        earthquakeMarkers.push(
-            L.circle(earthquakeFeatures[i].geometry.coordinates.slice(1), {
-                stroke: false,
-                fillOpacity: 0.75,
-                fillColor: colorGradient(earthquakeFeatures[i].geometry.coordinates[2]),
-                radius: earthquakeFeatures[i].properties.mag*50000
-            })
-        )
-        onEachFeature: onEachFeature
-    };
-
-    var earthquakeOverlay = {
-        'Earthquakes': earthquakeMarkers
-    };
-    
-    L.control.layers(earthquakeOverlay).addTo(myMap);
 });
+
+//----------Definition of Functions----------
+
+//Create a function that allows for markers to be colored based on earthquake depth
+function colorGradient(earthquakeDepth) {
+    if (earthquakeDepth <= 10) {
+        return('#AF93F8')
+    }
+    else if (earthquakeDepth <= 30) {
+        return('#D7F512')
+    }
+    else if (earthquakeDepth <= 50) {
+        return('#F9D719')
+    }
+    else if (earthquakeDepth <= 70) {
+        return('#FFAD29')
+    }
+    else if (earthquakeDepth <= 90) {
+        return('#FF9754')
+    }
+    else {
+        return('#FF4D5B')
+    }
+}
+
+//This function scales the earthquake's magnitude so it can be used as the radius of the circle marker
+function magScale(earthquakeMagnitude) {
+    return(earthquakeMagnitude * 5)
+}
+

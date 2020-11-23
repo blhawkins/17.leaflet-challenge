@@ -1,76 +1,110 @@
-//Save the API source as queryURL
-var queryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson';
-//Perform a GET request to obtain the data from the queryURL
-d3.json(queryUrl, function(data) {
-    //Send the data.features object to the createFeatures function
-    createFeatures(data.features)
+//----------General Map Creation----------
+//Create map object
+var myMap = L.map('mapid',{
+    center: [0, 0],
+    zoom: 4,
 });
 
+//Add a streetMap layer to the map
+var streetMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/streets-v11",
+  accessToken: API_KEY
+}).addTo(myMap);
 
+//Add a darkMap layer to the map
+var darkMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/dark-v10",
+  accessToken: API_KEY
+});
 
-function createFeatures(earthquakeData) {
+//Add a satelliteMap layer to the map
+var satelliteMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+    tileSize: 512,
+    maxZoom: 18,
+    zoomOffset: -1,
+    id: "mapbox/satellite-v9",
+    accessToken: API_KEY
+  });
 
-    //Create a function that creates a popup with the location and time of the earthquake
-    function onEachFeature(feature, layer) {
-        layer.bindPopup('<h3>' + feature.properties.place + "</h3><hr><h3>" + feature.properties.mag + " Magnitude</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
-    };
-    //Run the onEachFeature function for each element in the earthquakeData
-    var earthquakes = L.geoJSON(earthquakeData, {
-        onEachFeature: onEachFeature,
-        pointToLayer: function (feature, latlng) {
-             return L.circle(latlng, radius = feature.properties.mag*30000);
-        }
-    });
-    //Send the earthquake layer to the createMap function
-    createMap(earthquakes);
+//Create a baseMaps object to contain the three map style layers
+var baseMaps = {
+    'Street Map': streetMap,
+    'Dark Map': darkMap,
+    'Satellite Map': satelliteMap
 };
 
-function createMap(earthquakes) {
-    //Define streetmap layer
-    var streetmap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: 'streets-v11',
-        accessToken: API_KEY
-    });
-    //Define darkmap layer
-    var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "dark-v10", 
-        accessToken: API_KEY
-    });
-    //Define satellite layer
-    var satellitemap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "satellite-v9", 
-        accessToken: API_KEY
-    });
-    //Define the baseMaps object to hold the streetmap and darkmap base layers
-    var baseMaps = {
-        'Street Map': streetmap,
-        'Dark Map': darkmap,
-        'Satellite Map': satellitemap
+//----------Earthquake Data Overlay----------
+
+//Perform a GET request to obtain the data from the queryURL
+var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson';
+//Perform a GET request to obtain the data from the queryURL
+d3.json(earthquakeQueryUrl, function(earthquakeData) {
+    //Save features portion of the json file to the earthquakeFeatures variable
+    earthquakeFeatures = earthquakeData.features;
+    //
+    earthquakeMarkers = [];
+    //
+    for (var i = 0; i < earthquakeFeatures.length; i++){
+        earthquakeMarkers.push(L.circleMarker(earthquakeFeatures[i].geometry.coordinates.slice(0,2).reverse(), {
+            fillOpacity: 0.75,
+            color: 'white',
+            fillColor: colorGradient(earthquakeFeatures[i].geometry.coordinates[2]),
+            radius: magScale(earthquakeFeatures[i].properties.mag)
+        }).bindPopup('<h3>' + earthquakeFeatures[i].properties.place + "</h3><hr><h3>" + earthquakeFeatures[i].properties.mag + " Magnitude</h3><hr><p>" + new Date(earthquakeFeatures[i].properties.time) + "</p>"))
     };
-        //To find more map styles: https://docs.mapbox.com/mapbox-gl-js/api/map/#map-parameters
-    //Create an overlayMaps object to hold the earthquake labels overlay
+    console.log(earthquakeMarkers)
+
+    var earthquakeLayer = L.layerGroup(earthquakeMarkers);
+
+    //Use D3.json to pull in the tectonic plates geojson data
+    d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(tectonicPlatesData) {
+    //Create an object to store the geoJSON portion of the tectonicPlatesData
     var overlayMaps = {
-        Earthquakes: earthquakes
+        'Earthquakes': earthquakeLayer,
+        'Tectonic Plates': L.geoJSON(tectonicPlatesData)
     };
-    //Create the map using the streetmap baselayer and the earthquakes overlay object
-    var myMap = L.map('mapid',{
-        center: [0, 0],
-        zoom: 4,
-        layers: [satellitemap, earthquakes]
-    });
-    //Create a layer control with the baseMaps and overlayMaps objects
+    //Create a new layer control with the baseMaps and tectonicOverlay objects
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap)
-};
-
-d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(data) {
-    //Send the data.features object to the createFeatures function
-    
 });
+});
+
+//----------Definition of Functions----------
+
+//Create a function that allows for markers to be colored based on earthquake depth
+function colorGradient(earthquakeDepth) {
+    if (earthquakeDepth <= 10) {
+        return('#AF93F8')
+    }
+    else if (earthquakeDepth <= 30) {
+        return('#D7F512')
+    }
+    else if (earthquakeDepth <= 50) {
+        return('#F9D719')
+    }
+    else if (earthquakeDepth <= 70) {
+        return('#FFAD29')
+    }
+    else if (earthquakeDepth <= 90) {
+        return('#FF9754')
+    }
+    else {
+        return('#FF4D5B')
+    }
+}
+
+//This function scales the earthquake's magnitude so it can be used as the radius of the circle marker
+function magScale(earthquakeMagnitude) {
+    return(earthquakeMagnitude * 5)
+}
+

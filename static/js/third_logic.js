@@ -51,14 +51,32 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
     //Save features portion of the json file to the earthquakeFeatures variable
     earthquakeFeatures = earthquakeData.features;
     //
+    earthquakeMarkers = [];
+    //
     for (var i = 0; i < earthquakeFeatures.length; i++){
-        L.circleMarker(earthquakeFeatures[i].geometry.coordinates.slice(0,2).reverse(), {
+        earthquakeMarkers.push(L.circleMarker(earthquakeFeatures[i].geometry.coordinates.slice(0,2).reverse(), {
             fillOpacity: 0.75,
             color: 'white',
             fillColor: colorGradient(earthquakeFeatures[i].geometry.coordinates[2]),
             radius: magScale(earthquakeFeatures[i].properties.mag)
-        }).bindPopup('<h3>' + earthquakeFeatures[i].properties.place + "</h3><hr><h3>" + earthquakeFeatures[i].properties.mag + " Magnitude</h3><hr><p>" + new Date(earthquakeFeatures[i].properties.time) + "</p>").addTo(myMap);
+        }).bindPopup('<h3>' + earthquakeFeatures[i].properties.place + "</h3><hr><h3>" + earthquakeFeatures[i].properties.mag + " Magnitude</h3><hr><p>" + new Date(earthquakeFeatures[i].properties.time) + "</p>"))
     };
+    console.log(earthquakeMarkers)
+
+    var earthquakeLayer = L.layerGroup(earthquakeMarkers);
+
+    //Use D3.json to pull in the tectonic plates geojson data
+    d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(tectonicPlatesData) {
+    //Create an object to store the geoJSON portion of the tectonicPlatesData
+    var overlayMaps = {
+        'Earthquakes': earthquakeLayer,
+        'Tectonic Plates': L.geoJSON(tectonicPlatesData)
+    };
+    //Create a new layer control with the baseMaps and tectonicOverlay objects
+    L.control.layers(baseMaps, overlayMaps, {
+        collapsed: false
+    }).addTo(myMap)
+});
 });
 
 //----------Definition of Functions----------

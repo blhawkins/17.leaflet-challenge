@@ -44,16 +44,17 @@ var baseMaps = {
 
 //----------Earthquake Data Overlay----------
 
-//Perform a GET request to obtain the data from the queryURL
+//Define the query URL for the data source
 var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson';
 //Perform a GET request to obtain the data from the queryURL
 d3.json(earthquakeQueryUrl, function(earthquakeData) {
     //Save features portion of the json file to the earthquakeFeatures variable
     earthquakeFeatures = earthquakeData.features;
-    //
+    //Initialize the earthquakeMarkers array variable
     earthquakeMarkers = [];
-    //
+    //Cycle through the entries in the earthquakeFeatures dataset
     for (var i = 0; i < earthquakeFeatures.length; i++){
+        //For each entry, append a circleMarker object to the earthquakeMarkers array
         earthquakeMarkers.push(L.circleMarker(earthquakeFeatures[i].geometry.coordinates.slice(0,2).reverse(), {
             fillOpacity: 0.75,
             color: 'white',
@@ -61,27 +62,31 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
             radius: magScale(earthquakeFeatures[i].properties.mag)
         }).bindPopup('<h3>' + earthquakeFeatures[i].properties.place + "</h3><hr><h3>" + earthquakeFeatures[i].properties.mag + " Magnitude</h3><hr><p>" + new Date(earthquakeFeatures[i].properties.time) + "</p>"))
     };
-    console.log(earthquakeMarkers)
 
+    //Create an earthquake layer group
     var earthquakeLayer = L.layerGroup(earthquakeMarkers);
+
+    //----------Tectonic Plates Overlay----------
 
     //Use D3.json to pull in the tectonic plates geojson data
     d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(tectonicPlatesData) {
-    //Create an object to store the geoJSON portion of the tectonicPlatesData
-    var overlayMaps = {
-        'Earthquakes': earthquakeLayer,
-        'Tectonic Plates': L.geoJSON(tectonicPlatesData)
-    };
-    //Create a new layer control with the baseMaps and tectonicOverlay objects
-    L.control.layers(baseMaps, overlayMaps, {
-        collapsed: false
-    }).addTo(myMap)
-});
+
+        //Create an object overlayMaps to store the earthquakeLayer variable and the geoJSON portion of the tectonicPlatesData
+        var overlayMaps = {
+            'Earthquakes': earthquakeLayer,
+            'Tectonic Plates': L.geoJSON(tectonicPlatesData)
+        };
+
+        //Create a new layer control with the baseMaps and overlayMaps objects
+        L.control.layers(baseMaps, overlayMaps, {
+            collapsed: false
+        }).addTo(myMap)
+    });
 });
 
 //----------Definition of Functions----------
 
-//Create a function that allows for markers to be colored based on earthquake depth
+//This function allows for markers to be colored based on earthquake depth
 function colorGradient(earthquakeDepth) {
     if (earthquakeDepth <= 10) {
         return('#AF93F8')

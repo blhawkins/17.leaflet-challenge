@@ -32,12 +32,12 @@ Components of the logic.js file include:
 
 #### Screen Capures:
 ##### Earthquake Overlay on Street Base Map
-![alt text]( 'Earthquake Overlay on Street Base Map')
+![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/street_earthquakes.png 'Earthquake Overlay on Street Base Map')
 ##### Earthquake Overlay on Dark Base Map
-![alt text]( 'Earthquake Overlay on Dark Base Map')
+![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/dark_earthquakes.png 'Earthquake Overlay on Dark Base Map')
 ##### Earthquake Overlay on Satellite Base Map
-![alt text]( 'Earthquake Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/street_earthquakes.png 'Earthquake Overlay on Satellite Base Map')
 ##### Tectonic Plates Overlay on Satellite Base Map
-![alt text]( 'Tectonic Plates Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/satellite_plates.png 'Tectonic Plates Overlay on Satellite Base Map')
 ##### Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map
-![alt text]( 'Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/satellite_earthquakes_plates.png 'Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map')

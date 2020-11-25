@@ -1,4 +1,4 @@
-//----------General Map Creation----------
+//----------General Map Creation----------//
 //Create map object
 var myMap = L.map('mapid',{
     center: [0, 0],
@@ -43,7 +43,7 @@ var baseMaps = {
 };
 
 
-//Adding legend to the map
+//----------Legend Addition----------//
     //https://codepen.io/haakseth/pen/KQbjdO
     //https://gis.stackexchange.com/questions/133630/adding-leaflet-legend
 var legend = L.control({position: 'bottomright'});
@@ -65,7 +65,7 @@ legend.onAdd = function () {
 };
 legend.addTo(myMap);
 
-//----------Earthquake Data Overlay----------
+//----------Earthquake Data Overlay----------//
 
 //Define the query URL for the data source
 var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson';
@@ -89,7 +89,7 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
     //Create an earthquake layer group
     var earthquakeLayer = L.layerGroup(earthquakeMarkers);
 
-    //----------Tectonic Plates Overlay----------
+    //----------Tectonic Plates Overlay----------//
 
     //Use D3.json to pull in the tectonic plates geojson data
     d3.json('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function(tectonicPlatesData) {
@@ -107,7 +107,7 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
     });
 });
 
-//----------Definition of Functions----------
+//----------Definition of Functions----------//
 
 //This function allows for markers to be colored based on earthquake depth
 function colorGradient(earthquakeDepth) {

@@ -33,7 +33,7 @@ var satelliteMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/
     zoomOffset: -1,
     id: "mapbox/satellite-v9",
     accessToken: API_KEY
-  });
+});
 
 //Create a baseMaps object to contain the three map style layers
 var baseMaps = {
@@ -42,10 +42,33 @@ var baseMaps = {
     'Satellite Map': satelliteMap
 };
 
+
+//Adding legend to the map
+    //https://codepen.io/haakseth/pen/KQbjdO
+    //https://gis.stackexchange.com/questions/133630/adding-leaflet-legend
+var legend = L.control({position: 'bottomright'});
+legend.onAdd = function () {
+    var div = L.DomUtil.create('div', 'info legend');
+
+    //Define the labels and their cooresponding colors
+    var labels = ['<=10 Meters','10-30 Meters','30-50 Meters','50-70 Meters','70-90 Meters', '<90 Meters'];
+    var colors = ['#AF93F8', '#D7F512', '#F9D719', '#FFAD29', '#FF9754', '#FF4D5B'];
+
+    //Inject the labels and colors into the HTML
+    div.innerHTML += "<h4>Earthquake Depth</h4>";
+    for (var i = 0; i < labels.length; i++) {
+        div.innerHTML += 
+            '<i class="circle" style="background:' + colors[i] + '"></i> ' +
+            (labels[i] ? labels[i] + '<br>' : '+');
+    }
+    return div;
+};
+legend.addTo(myMap);
+
 //----------Earthquake Data Overlay----------
 
 //Define the query URL for the data source
-var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson';
+var earthquakeQueryUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson';
 //Perform a GET request to obtain the data from the queryURL
 d3.json(earthquakeQueryUrl, function(earthquakeData) {
     //Save features portion of the json file to the earthquakeFeatures variable
@@ -80,7 +103,7 @@ d3.json(earthquakeQueryUrl, function(earthquakeData) {
         //Create a new layer control with the baseMaps and overlayMaps objects
         L.control.layers(baseMaps, overlayMaps, {
             collapsed: false
-        }).addTo(myMap)
+        }).addTo(myMap);
     });
 });
 
@@ -106,10 +129,9 @@ function colorGradient(earthquakeDepth) {
     else {
         return('#FF4D5B')
     }
-}
+};
 
 //This function scales the earthquake's magnitude so it can be used as the radius of the circle marker
 function magScale(earthquakeMagnitude) {
-    return(earthquakeMagnitude * 5)
-}
-
+    return(earthquakeMagnitude * 4)
+};

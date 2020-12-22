@@ -16,9 +16,9 @@ University of Kansas Data Analytics Bootcamp Assignment 15
 
 # Description:
 
-This assignment explores earthquake GeoJSON records by visualizing them using the Leaflet.js Javascript library. Inside the [logic.js](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/JS/logic.js) file, the earthquake data is called from the [USGS Earthquake Feed](https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson). Then, the data is incorporated into an interactive map object. For the challenge portion of the assignment, an additional GeoJSON file containing the [Earth's tectonic plates](https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json) was successfully imported and added as an optional overlay feature on the map. The program is supported by an HTML template ([index.html](https://github.com/blhawkins/17.leaflet-challenge/blob/main/index.html)) and the cooresponding stylesheet ([style.css](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/CSS/style.css)).
+This assignment explores earthquake GeoJSON records by visualizing them using the Leaflet.js Javascript library. Inside the [logic.js](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/JS/logic.js) file, the earthquake data is called from the [USGS Earthquake Feed](https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson). Then, the data is incorporated into an interactive map object. For the challenge portion of the assignment, an additional GeoJSON file containing the [Earth's tectonic plates](https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json) was successfully imported and added as an optional overlay feature on the map. The program is supported by an HTML template ([index.html](https://github.com/blhawkins/QuakesAndPlates/blob/main/index.html)) and the cooresponding stylesheet ([style.css](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/CSS/style.css)).
 
-### [Logic.js](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/JS/logic.js)
+### [Logic.js](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/JS/logic.js)
 Components of the logic.js file include:
 1. Creation of a map object with a selection of three base map styles: a street map, a dark map, and a satellite map.
 2. Use of D3.json to perform an API call for earthquakes with magnitudes greater than 2.5 that occured in the previous 30 days.
@@ -32,12 +32,12 @@ Components of the logic.js file include:
 
 #### Screen Capures:
 ##### Earthquake Overlay on Street Base Map
-![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/street_earthquakes.png 'Earthquake Overlay on Street Base Map')
+![alt text](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/Images/Screenshots/street_earthquakes.png 'Earthquake Overlay on Street Base Map')
 ##### Earthquake Overlay on Dark Base Map
-![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/dark_earthquakes.png 'Earthquake Overlay on Dark Base Map')
+![alt text](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/Images/Screenshots/dark_earthquakes.png 'Earthquake Overlay on Dark Base Map')
 ##### Earthquake Overlay on Satellite Base Map
-![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/satellite_earthquakes.png 'Earthquake Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/Images/Screenshots/satellite_earthquakes.png 'Earthquake Overlay on Satellite Base Map')
 ##### Tectonic Plates Overlay on Satellite Base Map
-![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/satellite_plates.png 'Tectonic Plates Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/Images/Screenshots/satellite_plates.png 'Tectonic Plates Overlay on Satellite Base Map')
 ##### Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map
-![alt text](https://github.com/blhawkins/17.leaflet-challenge/blob/main/Static/Images/Screenshots/satellite_earthquakes_plates.png 'Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map')
+![alt text](https://github.com/blhawkins/QuakesAndPlates/blob/main/Static/Images/Screenshots/satellite_earthquakes_plates.png 'Earthquakes Overlay and Tectonic Plates Overlay on Satellite Base Map')

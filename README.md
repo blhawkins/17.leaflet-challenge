@@ -1,5 +1,5 @@
 # Quakes and Plates
-### Visualizing Earthquakes with Leaflet 🗺🌎
+### Visualizing the Intersection of Earthquakes and Tectonic Plates 🗺 🌎
 
 
 # Main Contents:

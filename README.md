@@ -1,6 +1,6 @@
-# 17.leaflet-challenge
+# Quakes and Plates
 ### Visualizing Earthquakes with Leaflet 🗺🌎
-University of Kansas Data Analytics Bootcamp Assignment 15
+
 
 # Main Contents:
     logic.js
